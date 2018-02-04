@@ -37,6 +37,9 @@ import org.springframework.beans.factory.FactoryBeanNotInitializedException;
  *
  * <p>Serves as base class for {@link AbstractBeanFactory}.
  *
+ * <h5>Note:</h5>
+ * <p>在DefaultSingletonBeanRegistry基础上增加了对FactoryBean的特殊处理功能。</p>
+ *
  * @author Juergen Hoeller
  * @since 2.5.1
  */

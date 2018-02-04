@@ -32,6 +32,9 @@ import org.springframework.core.io.ResourceLoader;
  * this interface. It only serves as suggestion for bean definition
  * readers that want to follow standard naming conventions.
  *
+ * <h5>Note:</h5>
+ * <p>主要定义资源文件读取并转换为BeanDefinition的各个功能。</p>
+ *
  * @author Juergen Hoeller
  * @since 1.1
  * @see org.springframework.core.io.Resource

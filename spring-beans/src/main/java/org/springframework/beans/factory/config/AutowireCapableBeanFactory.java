@@ -50,6 +50,9 @@ import org.springframework.beans.factory.BeanFactory;
  * ApplicationContext, to get access to an AutowireCapableBeanFactory:
  * simply cast the passed-in BeanFactory to AutowireCapableBeanFactory.
  *
+ * <h5>Note:</h5>
+ * <p>提供创建bean、自动注入、初始化以及应用bean的后处理器。</p>
+ *
  * @author Juergen Hoeller
  * @since 04.12.2003
  * @see org.springframework.beans.factory.BeanFactoryAware

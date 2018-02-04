@@ -31,6 +31,9 @@ import org.springframework.util.ResourceUtils;
  * from Strings when running in an ApplicationContext, using the particular
  * context's resource loading strategy.
  *
+ * <h5>Note:</h5>
+ * <p>定义资源加载器，主要应用于根据给定的资源文件地址返回对应的Resource。</p>
+ *
  * @author Juergen Hoeller
  * @since 10.03.2004
  * @see Resource

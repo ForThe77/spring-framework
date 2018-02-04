@@ -32,6 +32,9 @@ package org.springframework.core.env;
  * The effect is that an Environment object is 'read-only' until it is being accessed from
  * a ConfigurableApplicationContext, at which point it too may be configured.
  *
+ * <h5>Note:</h5>
+ * <p>定义获取Environment方法。
+ *
  * @author Chris Beams
  * @since 3.1
  * @see Environment

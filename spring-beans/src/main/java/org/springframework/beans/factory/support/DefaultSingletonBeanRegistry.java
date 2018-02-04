@@ -61,6 +61,9 @@ import org.springframework.util.StringUtils;
  * (which inherit from it). Can alternatively also be used as a nested
  * helper to delegate to.
  *
+ * <h5>Note:</h5>
+ * <p>对接口SingletonBeanRegistry各函数的实现。</p>
+ *
  * @author Juergen Hoeller
  * @since 2.0
  * @see #registerSingleton

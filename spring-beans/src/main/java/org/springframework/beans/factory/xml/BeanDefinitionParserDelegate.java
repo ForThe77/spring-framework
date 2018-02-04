@@ -73,6 +73,9 @@ import org.springframework.util.xml.DomUtils;
  * {@link BeanDefinitionParser BeanDefinitionParsers} or
  * {@link BeanDefinitionDecorator BeanDefinitionDecorators}.
  *
+ * <h5>Note:</h5>
+ * <p>定义解析Element的各种方法。
+ *
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @author Rod Johnson

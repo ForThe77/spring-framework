@@ -32,6 +32,9 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
  * use cases. This interface is just meant to allow for framework-internal
  * plug'n'play even when needing access to bean factory configuration methods.
  *
+ * <h5>Note:</h5>
+ * <p>BeanFactory配置清单，指定忽略类型及接口等。</p>
+ *
  * @author Juergen Hoeller
  * @since 03.11.2003
  * @see org.springframework.context.support.AbstractApplicationContext#getBeanFactory()

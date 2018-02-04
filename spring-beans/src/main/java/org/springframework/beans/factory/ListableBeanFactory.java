@@ -47,6 +47,9 @@ import org.springframework.beans.BeansException;
  * and {@code containsBeanDefinition}, the methods in this interface
  * are not designed for frequent invocation. Implementations may be slow.
  *
+ * <h5>Note:</h5>
+ * <p>根据各种条件获取bean的配置清单。</p>
+ *
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 16 April 2001

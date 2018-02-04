@@ -88,6 +88,9 @@ import org.springframework.beans.BeansException;
  * 2. DisposableBean's {@code destroy}<br>
  * 3. a custom destroy-method definition
  *
+ * <h5>Note:</h5>
+ * <p>定义获取bean及bean的各种属性。</p>
+ *
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @author Chris Beams

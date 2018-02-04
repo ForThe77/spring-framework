@@ -38,6 +38,9 @@ import org.springframework.util.Assert;
  * <p>Provides common properties like the bean factory to work on
  * and the class loader to use for loading bean classes.
  *
+ * <h5>Note:</h5>
+ * <p>对EnvironmentCapable、BeanDefinitionReader类定义的功能进行实现。
+ *
  * @author Juergen Hoeller
  * @author Chris Beams
  * @since 11.12.2003
