@@ -376,6 +376,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 
 	/**
+	 * 主要做了3件事：
+	 * 1.获取对XML文件的验证模式。
+	 * 2.加载XML文件，并得到对应的Document。
+	 * 3.根据返回的Document注册Bean信息（解析配置文件）。
 	 * Actually load bean definitions from the specified XML file.
 	 * @param inputSource the SAX InputSource to read from
 	 * @param resource the resource descriptor for the XML file

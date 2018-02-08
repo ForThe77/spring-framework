@@ -13,6 +13,9 @@ import org.springframework.core.io.ClassPathResource;
  */
 public class BeanFactoryTest {
 
+    /**
+     * 1.首先调用ClassPathResource的构造函数来构造Resource资源文件的实例对象。
+     */
     @Test
     public void testSimpleLoad() {
         BeanFactory bf = new XmlBeanFactory(new ClassPathResource("mine/beanFactoryTest.xml"));

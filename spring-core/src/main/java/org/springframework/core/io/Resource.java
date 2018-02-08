@@ -29,6 +29,9 @@ import java.net.URL;
  * physical form, but a URL or File handle can just be returned for
  * certain resources. The actual behavior is implementation-specific.
  *
+ * <h5>Note:</h5>
+ * <p>Resource接口抽象了所有Spring内部使用的底层资源：File、URL、Classpath等。
+ *
  * @author Juergen Hoeller
  * @since 28.12.2003
  * @see #getInputStream()
@@ -46,6 +49,7 @@ import java.net.URL;
 public interface Resource extends InputStreamSource {
 
 	/**
+	 * 存在性：
 	 * Determine whether this resource actually exists in physical form.
 	 * <p>This method performs a definitive existence check, whereas the
 	 * existence of a {@code Resource} handle only guarantees a valid
@@ -54,6 +58,7 @@ public interface Resource extends InputStreamSource {
 	boolean exists();
 
 	/**
+	 * 可读性：
 	 * Indicate whether the contents of this resource can be read via
 	 * {@link #getInputStream()}.
 	 * <p>Will be {@code true} for typical resource descriptors;
@@ -65,6 +70,7 @@ public interface Resource extends InputStreamSource {
 	boolean isReadable();
 
 	/**
+	 * 是否处于打开状态：
 	 * Indicate whether this resource represents a handle with an open stream.
 	 * If {@code true}, the InputStream cannot be read multiple times,
 	 * and must be read and closed to avoid resource leaks.

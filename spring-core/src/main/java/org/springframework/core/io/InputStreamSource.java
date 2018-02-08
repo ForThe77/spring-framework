@@ -31,6 +31,9 @@ import java.io.InputStream;
  * This makes this interface useful as an abstract content source for mail
  * attachments, for example.
  *
+ * <h5>Note:</h5>
+ * <p>封装任何能返回InputStream的类，比如File、Classpath下的资源和Byte Array等。
+ *
  * @author Juergen Hoeller
  * @since 20.01.2004
  * @see java.io.InputStream
