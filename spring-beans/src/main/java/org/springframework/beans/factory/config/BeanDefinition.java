@@ -29,6 +29,9 @@ import org.springframework.core.AttributeAccessor;
  * {@link BeanFactoryPostProcessor} such as {@link PropertyPlaceholderConfigurer}
  * to introspect and modify property values and other bean metadata.
  *
+ * <h5>Note:</h5>
+ * <p>Spring通过BeanDefinition将配置文件中的<bean>配置信息转换为容器的内部显示，并将这些BeanDefinition注册到BeanDefinitionRegistry中。
+ *
  * @author Juergen Hoeller
  * @author Rob Harrop
  * @since 19.03.2004

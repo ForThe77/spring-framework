@@ -488,6 +488,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	}
 
 	/**
+	 * 这个方法很好地应用了面向对象中的单一职责原则，将逻辑处理委托给单一的类进行处理，而这个逻辑处理类就是BeanDefinitionDocumentReader。
+	 * BeanDefinitionDocumentReader是一个接口，而实例化的工作是在createBeanDefinitionDocumentReader()完成的，而通过此方法，
+	 * BeanDefinitionDocumentReader真正的类型其实已经是DefaultBeanDefinitionDocumentReader了。
+	 *
 	 * Register the bean definitions contained in the given DOM document.
 	 * Called by {@code loadBeanDefinitions}.
 	 * <p>Creates a new instance of the parser class and invokes

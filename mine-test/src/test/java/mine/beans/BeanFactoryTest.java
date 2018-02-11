@@ -1,4 +1,4 @@
-package org.springframework.mine;
+package mine.beans;
 
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;

@@ -446,14 +446,23 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 1.提取元素中的id以及name属性。
+	 * 2.进一步解析其他所有属性并统一封装至GenericBeanDefinition类型的实例中。
+	 * 3.如果检测到bean没有指定beanName，那么使用默认规则为此生Bean生成beanName。
+	 * 4.将获取到的信息封装到BeanDefinitionHolder的实例中。
+	 *
 	 * Parses the supplied {@code &lt;bean&gt;} element. May return {@code null}
 	 * if there were errors during parse. Errors are reported to the
 	 * {@link org.springframework.beans.factory.parsing.ProblemReporter}.
 	 */
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, BeanDefinition containingBean) {
+		//1.
+		// 解析id属性
 		String id = ele.getAttribute(ID_ATTRIBUTE);
+		// 解析name属性
 		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
 
+		// 分隔name属性
 		List<String> aliases = new ArrayList<String>();
 		if (StringUtils.hasLength(nameAttr)) {
 			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);
@@ -473,10 +482,13 @@ public class BeanDefinitionParserDelegate {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
 
+		//2.
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
 				try {
+					//3.
+					// 如果不存在beanName，那么根据Spring中提供的命名规则为当前bean生成对应的beanName
 					if (containingBean != null) {
 						beanName = BeanDefinitionReaderUtils.generateBeanName(
 								beanDefinition, this.readerContext.getRegistry(), true);
@@ -504,6 +516,7 @@ public class BeanDefinitionParserDelegate {
 				}
 			}
 			String[] aliasesArray = StringUtils.toStringArray(aliases);
+			//4.
 			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
 		}
 
@@ -541,30 +554,41 @@ public class BeanDefinitionParserDelegate {
 		this.parseState.push(new BeanEntry(beanName));
 
 		String className = null;
+		// 解析class属性
 		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {
 			className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
 		}
 
 		try {
 			String parent = null;
+			// 解析parent属性
 			if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
 				parent = ele.getAttribute(PARENT_ATTRIBUTE);
-			}
-			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
+		}
+		// 创建用于承载属性的AbstractBeanDefinition类型的GenericBeanDefinition
+		AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
-			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
-			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
+		// 硬编码解析默认bean的各种属性
+		parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
+		// 提取description
+		bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
-			parseMetaElements(ele, bd);
-			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
-			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
+		// 解析元数据
+		parseMetaElements(ele, bd);
+		// 解析lookup-method属性
+		parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
+		// 解析replaced-method属性
+		parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
-			parseConstructorArgElements(ele, bd);
-			parsePropertyElements(ele, bd);
-			parseQualifierElements(ele, bd);
+		// 解析构造函数参数
+		parseConstructorArgElements(ele, bd);
+		// 解析property子元素
+		parsePropertyElements(ele, bd);
+		// 解析qualifier子元素
+		parseQualifierElements(ele, bd);
 
-			bd.setResource(this.readerContext.getResource());
-			bd.setSource(extractSource(ele));
+		bd.setResource(this.readerContext.getResource());
+		bd.setSource(extractSource(ele));
 
 			return bd;
 		}
@@ -594,13 +618,16 @@ public class BeanDefinitionParserDelegate {
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 			BeanDefinition containingBean, AbstractBeanDefinition bd) {
 
+		// 解析scope属性
 		if (ele.hasAttribute(SCOPE_ATTRIBUTE)) {
 			// Spring 2.x "scope" attribute
 			bd.setScope(ele.getAttribute(SCOPE_ATTRIBUTE));
 			if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
+				// scope与singleton两个属性只能指定其中之一，不可以同时出现，否则Spring将会报出异常
 				error("Specify either 'scope' or 'singleton', not both", ele);
 			}
 		}
+		// 解析singleton属性
 		else if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
 			// Spring 1.x "singleton" attribute
 			bd.setScope(TRUE_VALUE.equals(ele.getAttribute(SINGLETON_ATTRIBUTE)) ?
@@ -608,30 +635,38 @@ public class BeanDefinitionParserDelegate {
 		}
 		else if (containingBean != null) {
 			// Take default from containing bean in case of an inner bean definition.
+			// 在嵌入beanDefinition情况下且没有单独指定scope属性，则使用父类默认的属性
 			bd.setScope(containingBean.getScope());
 		}
 
+		// 解析abstract属性
 		if (ele.hasAttribute(ABSTRACT_ATTRIBUTE)) {
 			bd.setAbstract(TRUE_VALUE.equals(ele.getAttribute(ABSTRACT_ATTRIBUTE)));
 		}
 
+		// 解析lazy-init属性
 		String lazyInit = ele.getAttribute(LAZY_INIT_ATTRIBUTE);
 		if (DEFAULT_VALUE.equals(lazyInit)) {
 			lazyInit = this.defaults.getLazyInit();
 		}
+		// 若没有设置或设置成其他字符，都会被设置为false
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
 
+		// 解析autowire属性
 		String autowire = ele.getAttribute(AUTOWIRE_ATTRIBUTE);
 		bd.setAutowireMode(getAutowireMode(autowire));
 
+		// 解析dependency-check属性
 		String dependencyCheck = ele.getAttribute(DEPENDENCY_CHECK_ATTRIBUTE);
 		bd.setDependencyCheck(getDependencyCheck(dependencyCheck));
 
+		// 解析depends-on属性
 		if (ele.hasAttribute(DEPENDS_ON_ATTRIBUTE)) {
 			String dependsOn = ele.getAttribute(DEPENDS_ON_ATTRIBUTE);
 			bd.setDependsOn(StringUtils.tokenizeToStringArray(dependsOn, MULTI_VALUE_ATTRIBUTE_DELIMITERS));
 		}
 
+		// 解析autowire-candidate属性
 		String autowireCandidate = ele.getAttribute(AUTOWIRE_CANDIDATE_ATTRIBUTE);
 		if ("".equals(autowireCandidate) || DEFAULT_VALUE.equals(autowireCandidate)) {
 			String candidatePattern = this.defaults.getAutowireCandidates();
@@ -644,10 +679,12 @@ public class BeanDefinitionParserDelegate {
 			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate));
 		}
 
+		// 解析primary属性
 		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) {
 			bd.setPrimary(TRUE_VALUE.equals(ele.getAttribute(PRIMARY_ATTRIBUTE)));
 		}
 
+		// 解析init-method属性
 		if (ele.hasAttribute(INIT_METHOD_ATTRIBUTE)) {
 			String initMethodName = ele.getAttribute(INIT_METHOD_ATTRIBUTE);
 			if (!"".equals(initMethodName)) {
@@ -661,6 +698,7 @@ public class BeanDefinitionParserDelegate {
 			}
 		}
 
+		// 解析destroy-method属性
 		if (ele.hasAttribute(DESTROY_METHOD_ATTRIBUTE)) {
 			String destroyMethodName = ele.getAttribute(DESTROY_METHOD_ATTRIBUTE);
 			if (!"".equals(destroyMethodName)) {
@@ -674,9 +712,11 @@ public class BeanDefinitionParserDelegate {
 			}
 		}
 
+		// 解析factory-method属性
 		if (ele.hasAttribute(FACTORY_METHOD_ATTRIBUTE)) {
 			bd.setFactoryMethodName(ele.getAttribute(FACTORY_METHOD_ATTRIBUTE));
 		}
+		// 解析factory-bean属性
 		if (ele.hasAttribute(FACTORY_BEAN_ATTRIBUTE)) {
 			bd.setFactoryBeanName(ele.getAttribute(FACTORY_BEAN_ATTRIBUTE));
 		}
@@ -698,16 +738,25 @@ public class BeanDefinitionParserDelegate {
 				parentName, className, this.readerContext.getBeanClassLoader());
 	}
 
+	/**
+	 * 解析子元素meta
+	 * @param ele
+	 * @param attributeAccessor
+	 */
 	public void parseMetaElements(Element ele, BeanMetadataAttributeAccessor attributeAccessor) {
+		// 获取当前节点的所有子元素
 		NodeList nl = ele.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
+			// 提取meta
 			if (isCandidateElement(node) && nodeNameEquals(node, META_ELEMENT)) {
 				Element metaElement = (Element) node;
 				String key = metaElement.getAttribute(KEY_ATTRIBUTE);
 				String value = metaElement.getAttribute(VALUE_ATTRIBUTE);
+				// 使用key、value构造BeanMetadataAttribute
 				BeanMetadataAttribute attribute = new BeanMetadataAttribute(key, value);
 				attribute.setSource(extractSource(metaElement));
+				// 记录信息
 				attributeAccessor.addMetadataAttribute(attribute);
 			}
 		}
@@ -794,7 +843,10 @@ public class BeanDefinitionParserDelegate {
 		}
 	}
 
-	/**
+	/**解析子元素lookup-method：获取器注入。
+	 * 获取器注入是一种特殊的方法注入，它是把一个方法声明为返回某种类型的bean，但实际要返回的bean是在配置文件里配置的，
+	 * 此方法可用在设计有些可插拔的功能上，接触程序依赖。
+	 *
 	 * Parse lookup-override sub-elements of the given bean element.
 	 */
 	public void parseLookupOverrideSubElements(Element beanEle, MethodOverrides overrides) {

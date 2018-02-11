@@ -35,7 +35,9 @@ import org.springframework.core.AliasRegistry;
  * and GenericApplicationContext.
  *
  * <h5>Note:</h5>
- * <p>定义对BeanDefinition的各种增删改操作。</p>
+ * <p>定义对BeanDefinition的各种增删改操作。
+ * <p>Spring容器的BeanDefinitionRegistry就像是Spring配置信息的内存信息库，主要以map的形式保存，
+ * 后续操作直接从BeanDefinitionRegistry中读取配置信息。
  *
  * @author Juergen Hoeller
  * @since 26.11.2003

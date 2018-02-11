@@ -1,4 +1,4 @@
-package org.springframework.mine;
+package mine.beans;
 
 /**
  * @Description:
