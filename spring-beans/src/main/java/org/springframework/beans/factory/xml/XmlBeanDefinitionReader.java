@@ -389,9 +389,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 			throws BeanDefinitionStoreException {
 		try {
-			int validationMode = getValidationModeForResource(resource);
+			//1.获取对XML文件的验证模式。
+			int validationMode = getValidationModeForResource(resource);//获取对应资源的验证方式
+			//2.加载XML文件，并得到对应的Document。
 			Document doc = this.documentLoader.loadDocument(
 					inputSource, getEntityResolver(), this.errorHandler, validationMode, isNamespaceAware());
+			//3.根据返回的Document注册Bean信息（解析配置文件）。
 			return registerBeanDefinitions(doc, resource);
 		}
 		catch (BeanDefinitionStoreException ex) {
@@ -420,8 +423,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	}
 
 
-	/**
-	 * Gets the validation mode for the specified {@link Resource}. If no explicit
+	/**获取对应资源的验证模式：
+	 * 若设定了验证模式则使用设定的验证模式（可通过XmlBeanDefinitionReader#setValidationMode方法进行设定），
+	 * 否则使用自动检测的方法。而自动检测验证模式的功能在detectValidationMode方法中实现，在detectValidationMode中又将自动检测
+	 * 验证模式的工作委托给了专门处理类XmlValidationModeDetector，调用了其detectValidationMode方法。
+	 *
+	 *  Gets the validation mode for the specified {@link Resource}. If no explicit
 	 * validation mode has been configured then the validation mode is
 	 * {@link #detectValidationMode detected}.
 	 * <p>Override this method if you would like full control over the validation
@@ -429,9 +436,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	protected int getValidationModeForResource(Resource resource) {
 		int validationModeToUse = getValidationMode();
-		if (validationModeToUse != VALIDATION_AUTO) {
+        //如果手动指定了验证模式则使用指定的验证模式
+        if (validationModeToUse != VALIDATION_AUTO) {
 			return validationModeToUse;
 		}
+		//如果未指定则使用自动检测
 		int detectedMode = detectValidationMode(resource);
 		if (detectedMode != VALIDATION_AUTO) {
 			return detectedMode;
@@ -493,10 +502,16 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@SuppressWarnings("deprecation")
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+		//使用DefaultBeanDefinitionDocumentReader实例化BeanDefinitionDocumentReader
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+		//将环境变量设置其中
 		documentReader.setEnvironment(getEnvironment());
+		//在实例化BeanDefinitionReader时候会将BeanDefinitionRegistry传入，默认使用继承自DefaultListableBeanFactory的子类。
+		//记录统计前BeanDefinition的加载个数。
 		int countBefore = getRegistry().getBeanDefinitionCount();
+		//加载及注册bean
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		//记录本次加载的BeanDefinition个数
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 

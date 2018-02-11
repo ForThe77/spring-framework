@@ -60,18 +60,21 @@ public class DefaultDocumentLoader implements DocumentLoader {
 	private static final Log logger = LogFactory.getLog(DefaultDocumentLoader.class);
 
 
-	/**
+	/**获取Document：
+	 *
 	 * Load the {@link Document} at the supplied {@link InputSource} using the standard JAXP-configured
 	 * XML parser.
 	 */
 	public Document loadDocument(InputSource inputSource, EntityResolver entityResolver,
 			ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception {
-
+		//1.创建DocumentBuilderFactory；
 		DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Using JAXP provider [" + factory.getClass().getName() + "]");
 		}
+		//2.通过DocumentBuilderFactory创建DocumentBuilder；
 		DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);
+		//3.解析inputSource来返回Document对象。
 		return builder.parse(inputSource);
 	}
 

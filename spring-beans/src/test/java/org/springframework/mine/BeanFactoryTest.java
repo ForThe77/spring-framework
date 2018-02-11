@@ -8,7 +8,7 @@ import org.springframework.core.io.ClassPathResource;
 /**
  * @Description:
  * @Date: Created in 14:30 2018/2/4
- * @Author: xrwang3
+ * @Author: Roy
  * @Modified By:
  */
 public class BeanFactoryTest {
