@@ -1,7 +1,10 @@
 package mine.lookup;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 /**
- * @Description:
+ * @Description: 测试lookup-method
  * @Date: Created in 15:47 2018/2/11
  * @Author: Roy
  * @Modified By:
@@ -9,7 +12,9 @@ package mine.lookup;
 public class LookUpMainTest {
 
     public static void main(String[] args) {
-        
+       ApplicationContext bf = new ClassPathXmlApplicationContext("lookup/lookupTest.xml");
+       GetBeanTest getBeanTest = (GetBeanTest) bf.getBean("getBeanTest");
+       getBeanTest.showMe();
     }
 
 }

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * @Description:
+ * @Description: 测试beans
  * @Date: Created in 14:30 2018/2/4
  * @Author: Roy
  * @Modified By:
