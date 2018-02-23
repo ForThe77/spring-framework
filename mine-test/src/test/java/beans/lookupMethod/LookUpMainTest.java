@@ -1,4 +1,4 @@
-package mine.lookup;
+package beans.lookupMethod;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -12,7 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class LookUpMainTest {
 
     public static void main(String[] args) {
-       ApplicationContext bf = new ClassPathXmlApplicationContext("lookup/lookupTest.xml");
+       ApplicationContext bf = new ClassPathXmlApplicationContext("beans/lookupMethod/lookupTest.xml");
        GetBeanTest getBeanTest = (GetBeanTest) bf.getBean("getBeanTest");
        getBeanTest.showMe();
     }

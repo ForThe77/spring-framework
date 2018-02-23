@@ -1,4 +1,4 @@
-package mine.lookup;
+package beans.lookupMethod;
 
 /**
  * @Description:
@@ -6,10 +6,10 @@ package mine.lookup;
  * @Author: Roy
  * @Modified By:
  */
-public class Teacher extends User {
+public class User {
 
-    @Override
     public void showMe() {
-        System.out.println("I am Teacher.");
+        System.out.println("I am user.");
     }
+
 }

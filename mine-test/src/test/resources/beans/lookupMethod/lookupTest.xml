@@ -3,6 +3,11 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="myTestBean" class="mine.beans.MyTestBean"></bean>
+    <bean id="getBeanTest" class="beans.lookupMethod.GetBeanTest">
+        <lookup-method name="getBean" bean="student"/>
+    </bean>
+
+    <bean id="teacher" class="beans.lookupMethod.Teacher"/>
+    <bean id="student" class="beans.lookupMethod.Student"/>
 
 </beans>

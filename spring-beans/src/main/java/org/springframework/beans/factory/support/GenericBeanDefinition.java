@@ -29,6 +29,10 @@ import org.springframework.beans.factory.config.BeanDefinition;
  * potentially even reconfiguring the parent name). Use {@code RootBeanDefinition} /
  * {@code ChildBeanDefinition} where parent/child relationships happen to be pre-determined.
  *
+ * <h5>Note:</h5>
+ * <p>XML中所有的配置都可以在GenericBeanDefinition的实例类中找到对应的配置，GenericBeanDefinition只是子类实现，
+ * 而大部分的通用属性都保存在了AbstractBeanDefinition中。
+ *
  * @author Juergen Hoeller
  * @since 2.5
  * @see #setParentName

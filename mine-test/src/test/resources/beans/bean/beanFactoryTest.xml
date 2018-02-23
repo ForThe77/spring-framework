@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="myTestBean" class="beans.bean.MyTestBean">
+        <meta key="testMeta" value="啊啊啊啊"/>
+
+        <!--<constructor-arg index="0" value="参数111"/>
+        <constructor-arg index="1" value="参数222"/>-->
+        <constructor-arg index="0" type="java.lang.String">
+            <value>参数111</value>
+        </constructor-arg>
+        <constructor-arg index="1" type="int" value="222"/>
+        <constructor-arg index="2" type="java.util.List">
+            <list value-type="java.lang.String">
+                <value>啊啊啊</value>
+                <value>恩恩恩</value>
+                <value>嘿嘿嘿</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg index="3" type="java.util.Map">
+            <map key-type="java.lang.String" value-type="java.lang.Integer">
+                <!--<entry>
+                    <key>
+                        <value>key1</value>
+                    </key>
+                    <value>11</value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>key2</value>
+                    </key>
+                    <value>22</value>
+                </entry>-->
+                <entry key="key1" value="11"/>
+                <entry key="key2" value="22"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg index="4" ref="testConstructorArg" type="beans.bean.TestConstructorArg"/>
+
+        <property name="testProperty" value="呃呃呃呃"/>
+    </bean>
+
+    <bean id="testConstructorArg" class="beans.bean.TestConstructorArg">
+        <constructor-arg value="噢噢噢噢噢噢噢噢"/>
+    </bean>
+
+</beans>

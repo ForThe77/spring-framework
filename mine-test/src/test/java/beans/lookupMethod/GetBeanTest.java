@@ -1,4 +1,4 @@
-package mine.lookup;
+package beans.lookupMethod;
 
 /**
  * @Description:

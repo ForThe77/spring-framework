@@ -3,10 +3,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="getBeanTest" class="mine.lookup.GetBeanTest">
-        <lookup-method name="getBean" bean="teacher"/>
+    <bean id="testChangeMethod" class="beans.replacedMethod.TestChangeMethod">
+        <replaced-method name="changeMe" replacer="replacer"/>
     </bean>
 
-    <bean id="teacher" class="mine.lookup.Teacher"/>
+    <bean id="replacer" class="beans.replacedMethod.TestMethodReplacer"/>
 
 </beans>
