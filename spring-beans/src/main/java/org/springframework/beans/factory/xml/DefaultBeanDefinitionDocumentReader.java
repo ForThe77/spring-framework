@@ -323,7 +323,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 	/**解析bean标签:
 	 * 1.首先委托BeanDefinitionDelegate类的parseBeanDefinitionElement方法进行元素解析，返回BeanDefinitionHolder类型的实例bdHolder，
-	 * 经过这个方法后，bdHolder实例已经包含我们配置文件的各种属性，例如class、name、id、alias之类的属性。
+	 	经过这个方法后，bdHolder实例已经包含我们配置文件的各种属性，例如class、name、id、alias之类的属性。
 	 * 2.当返回bdHolder不为空的情况下，若存在默认标签的子节点下再有自定义属性，还需要再次对自定义标签进行解析。
 	 * 3.解析完成后，需要对解析后的bdHolder进行注册，同样，注册操作委托给了BeanDefinitionReaderUtils的registerBeanDefinition方法。
 	 * 4.最后发出响应事件，通知相关的监听器，这个bean已经加载完成了。
@@ -336,6 +336,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
 			//2.
+			// 当Spring中的bean使用的是默认的标签配置，但是其中的子元素却使用了自定义的配置时，这句代码便会起作用了。
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
 				//3.
