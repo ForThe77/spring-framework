@@ -55,6 +55,15 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	/** Constant for the name attribute */
 	public static final String NAME_ATTRIBUTE = "name";
 
+	/**
+	 * 对自定义配置文件的解析：
+	 * 大部分代码是用来处理将解析后的AbstractBeanDefinition转换为BeanDefinitionHolder并注册的功能，
+	 * 而真正去做解析的事情委托给了parseInternal。
+	 * @param element the element that is to be parsed into one or more {@link BeanDefinition BeanDefinitions}
+	 * @param parserContext the object encapsulating the current state of the parsing process;
+	 * provides access to a {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}
+	 * @return
+	 */
 	public final BeanDefinition parse(Element element, ParserContext parserContext) {
 		AbstractBeanDefinition definition = parseInternal(element, parserContext);
 		if (definition != null && !parserContext.isNested()) {
@@ -70,9 +79,11 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 				if (StringUtils.hasLength(name)) {
 					aliases = StringUtils.trimArrayElements(StringUtils.commaDelimitedListToStringArray(name));
 				}
+				// 将AbstractBeanDefinition转换为BeanDefinitionHolder，并注册
 				BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id, aliases);
 				registerBeanDefinition(holder, parserContext.getRegistry());
 				if (shouldFireEvents()) {
+					// 需要通知监听器，则进行处理
 					BeanComponentDefinition componentDefinition = new BeanComponentDefinition(holder);
 					postProcessComponentDefinition(componentDefinition);
 					parserContext.registerComponent(componentDefinition);
