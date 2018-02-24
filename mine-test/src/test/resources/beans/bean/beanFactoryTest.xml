@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="myTestBean" class="beans.bean.MyTestBean">
+    <bean id="myTestBean" class="beans.bean.MyTestBean" name="mtb3,mtb4">
         <meta key="testMeta" value="啊啊啊啊"/>
 
         <!--<constructor-arg index="0" value="参数111"/>
@@ -42,8 +42,13 @@
         <property name="testProperty" value="呃呃呃呃"/>
     </bean>
 
-    <bean id="testConstructorArg" class="beans.bean.TestConstructorArg">
-        <constructor-arg value="噢噢噢噢噢噢噢噢"/>
-    </bean>
+    <alias name="myTestBean" alias="mtb1"/>
+    <alias name="myTestBean" alias="mtb2"/>
+
+    <import resource="applicationContext1.xml"/>
+
+    <!-- 嵌入式beans标签：与单独的配置文件并无太大差别，无非是递归调用beans的解析过程 -->
+    <beans>
+    </beans>
 
 </beans>
