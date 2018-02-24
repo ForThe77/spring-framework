@@ -650,14 +650,18 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of BeanDefinitionRegistry interface
 	//---------------------------------------------------------------------
 
-	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
-			throws BeanDefinitionStoreException {
-
+	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) throws BeanDefinitionStoreException {
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
 
 		if (beanDefinition instanceof AbstractBeanDefinition) {
 			try {
+				/**
+				 * 1.对AbstractBeanDefinition的校验。
+				 * 注册前的最后一次校验，这里的校验不同于之前的XML文件校验，
+				 * 主要是对于AbstractBeanDefinition属性中的methodOverrides校验，
+				 * 校验methodOverrides是否与工厂方法并存或者methodOverrides对应的方法根本不存在
+				 */
 				((AbstractBeanDefinition) beanDefinition).validate();
 			}
 			catch (BeanDefinitionValidationException ex) {
@@ -668,9 +672,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		BeanDefinition oldBeanDefinition;
 
+		// 因为beanDefinitionMap是全局变量，这里定会存在并发访问的情况
 		synchronized (this.beanDefinitionMap) {
 			oldBeanDefinition = this.beanDefinitionMap.get(beanName);
+			/**
+			 * 2.对beanName已经注册的情况的处理。
+			 * 如果设置了不允许bean的覆盖，则需要抛出异常，否则直接覆盖。
+			 */
 			if (oldBeanDefinition != null) {
+				// 若对应的beanName已经注册且在配置中配置了bean不允许被覆盖，则抛出异常
 				if (!this.allowBeanDefinitionOverriding) {
 					throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName,
 							"Cannot register bean definition [" + beanDefinition + "] for bean '" + beanName +
@@ -684,13 +694,20 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 			else {
+				// 记录beanName
 				this.beanDefinitionNames.add(beanName);
 				this.frozenBeanDefinitionNames = null;
 			}
+			/**
+			 * 3.注册beanDefinition，加入map缓存。
+			 */
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 
 		if (oldBeanDefinition != null || containsSingleton(beanName)) {
+			/**
+			 * 4.重置所有beanName对应的缓存，清除解析之前留下的对应beanName的缓存。
+			 */
 			resetBeanDefinition(beanName);
 		}
 	}
