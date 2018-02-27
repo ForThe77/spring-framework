@@ -165,6 +165,10 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
+	 * 转换对应beanName-处理别名情况：
+	 * 取指定alias所表示的最终beanName，例如别名A指向名称为B的bean则返回B；
+	 * 若别名A指定别名B，别名B又指向名称为C的bean则返回C。
+	 *
 	 * Determine the raw name, resolving aliases to canonical names.
 	 * @param name the user-specified name
 	 * @return the transformed name
@@ -178,8 +182,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 			if (resolvedName != null) {
 				canonicalName = resolvedName;
 			}
-		}
-		while (resolvedName != null);
+		} while (resolvedName != null);
 		return canonicalName;
 	}
 

@@ -61,6 +61,9 @@ public abstract class BeanFactoryUtils {
 	}
 
 	/**
+	 * 转换对应beanName-处理FactoryBean情况：
+	 * 去除FactoryBean的修饰符，也就是如果name="&aa"，那么会首先去除&而使name="aa"。
+	 *
 	 * Return the actual bean name, stripping out the factory dereference
 	 * prefix (if any, also stripping repeated factory prefixes if found).
 	 * @param name the name of the bean

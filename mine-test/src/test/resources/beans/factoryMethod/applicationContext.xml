@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 使用静态工厂方法实例化Bean: 使用这种方式除了指定必须的class属性，还要指定factory-method属性来指定实例化Bean的方法，而且使用静态工厂方法也允许指定方法参数 -->
+    <bean id="userStaticFactory" class="beans.factoryMethod.UserStaticFactory" factory-method="newInstance">
+        <constructor-arg index="0" value="lisi"/>
+    </bean>
+
+    <!-- 使用实例工厂方法实例化Bean: 使用这种方式不能指定class属性，此时必须使用factory-bean属性来指定工厂Bean，factory-method属性指定实例化Bean的方法，而且使用实例工厂方法允许指定方法参数，方式和使用构造器方式一样 -->
+    <bean id="userInstanceFactory" class="beans.factoryMethod.UserInstanceFactory" />
+    <bean id="userFactory" factory-bean="userInstanceFactory" factory-method="newInstance" >
+        <constructor-arg index="0" value="aaaa"></constructor-arg>
+    </bean>
+
+</beans>

@@ -405,9 +405,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return result;
 	}
 
-	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
-			throws BeansException {
-
+	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
 		Object result = existingBean;
 		for (BeanPostProcessor beanProcessor : getBeanPostProcessors()) {
 			result = beanProcessor.postProcessAfterInitialization(result, beanName);
