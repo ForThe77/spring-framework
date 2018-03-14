@@ -405,6 +405,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return result;
 	}
 
+	/**
+	 * 实例化后的后处理器应用：
+	 * Spring中的规则是在bean的初始化后，尽可能保证将注册的后处理器postProcessAfterInitialization方法应用到该bean中，
+	 * 因为如果返回的bean不为空，那么便不会再次经历普通bean的创建过程，所以只能在这里应用后处理器的postProcessAfterInitialization方法。
+	 * @param existingBean the new bean instance
+	 * @param beanName the name of the bean
+	 * @return
+	 * @throws BeansException
+	 */
 	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
 		Object result = existingBean;
 		for (BeanPostProcessor beanProcessor : getBeanPostProcessors()) {
@@ -432,9 +441,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			logger.debug("Creating instance of bean '" + beanName + "'");
 		}
 		// Make sure bean class is actually resolved at this point.
+		/**
+		 * 1.锁定class，根据设置的class属性或className来解析Class。
+		 */
 		resolveBeanClass(mbd, beanName);
 
 		// Prepare method overrides.
+		/**
+		 * 2.验证及准备覆盖的方法。对override属性进行标记及验证。
+		 * 在Spring配置中是存在lookup-method和replaced-method的，而两个配置的加载其实就是将配置统一放在BeanDefinition中的methodOverrides属性里，
+		 * 而这个函数的操作其实也就是针对于这两个配置的。
+		 * 原理：在bean实例化的时候，如果检测到存在methodOverrides属性，会动态地为当前bean生成代理并使用对应的拦截器为bean做增强处理。
+		 */
 		try {
 			mbd.prepareMethodOverrides();
 		}
@@ -445,7 +463,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			/**
+			 * 3.应用初始化前的后处理器，解析指定bean是否存在初始化前的短路操作。
+			 * 给BeanPostProcessors一个机会，来返回代理来代替真正的实例
+			 */
 			Object bean = resolveBeforeInstantiation(beanName, mbd);
+			// 短路判断：当经过前置处理后返回的结果如果不为空，那么会直接略过后续Bean的创建而直接返回结果。
 			if (bean != null) {
 				return bean;
 			}
@@ -455,6 +478,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					"BeanPostProcessor before instantiation of bean failed", ex);
 		}
 
+		/**
+		 * 4.创建bean。
+		 */
 		Object beanInstance = doCreateBean(beanName, mbd, args);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Finished creating instance of bean '" + beanName + "'");
@@ -882,6 +908,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * applyBeanPostProcessorsBeforeInstantiation和applyBeanPostProcessorsAfterInitialization两个方法，
+	 * 无非是对后处理器中的所有InstantiationAwareBeanPostProcessor类型的后处理器进行postProcessBeforeInstantiation方法
+	 * 和BeanPostProcessor的postProcessAfterInitialization方法的调用。
+	 *
 	 * Apply before-instantiation post-processors, resolving whether there is a
 	 * before-instantiation shortcut for the specified bean.
 	 * @param beanName the name of the bean
@@ -890,6 +920,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	protected Object resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd) {
 		Object bean = null;
+		// 如果尚未被解析
 		if (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) {
 			// Make sure bean class is actually resolved at this point.
 			if (mbd.hasBeanClass() && !mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
@@ -904,6 +935,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 实例化前的后处理器应用：
+	 * bean的实例化前调用，也就是将AbstractBeanDefinition转换为BeanWrapper前的处理。给子类一个修改BeanDefinition的机会，
+	 * 也就是说当程序经过这个方法后，bean可能已经不是我们认为的bean了，而是或许成为了一个经过处理的代理bean，
+	 * 可能是通过cglib生成的，也可能是通过其他技术生成的。
+	 *
 	 * Apply InstantiationAwareBeanPostProcessors to the specified bean definition
 	 * (by class and name), invoking their {@code postProcessBeforeInstantiation} methods.
 	 * <p>Any returned object will be used as the bean instead of actually instantiating
@@ -915,9 +951,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @throws BeansException if any post-processing failed
 	 * @see InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation
 	 */
-	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName)
-			throws BeansException {
-
+	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
 		for (BeanPostProcessor bp : getBeanPostProcessors()) {
 			if (bp instanceof InstantiationAwareBeanPostProcessor) {
 				InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
